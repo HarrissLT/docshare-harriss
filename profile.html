@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ cá nhân - DocShare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/profile.css">
+</head>
+<body>
+
+    <!-- NAVBAR (Copy từ index.html sang) -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Doc<span class="highlight">Share</span>.</a>
+            <div class="nav-auth">
+                <!-- Javascript sẽ điền avatar vào đây -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="container section-padding">
+        <h2 class="page-title">Cài đặt tài khoản</h2>
+        
+        <div class="profile-grid">
+            <!-- Cột 1: Avatar -->
+            <div class="profile-card center">
+                <div class="avatar-wrapper">
+                    <img id="currentAvatar" src="https://placehold.co/150x150/e2e8f0/64748b?text=User" alt="Avatar">
+                    <label for="avatarInput" class="edit-avatar-btn"><i class="fas fa-camera"></i></label>
+                    <input type="file" id="avatarInput" accept="image/*" hidden>
+                </div>
+                <h3 id="displayName">Đang tải...</h3>
+                <p id="displayEmail">...</p>
+                <p class="role-badge" id="displayRole">Thành viên</p>
+            </div>
+
+            <!-- Cột 2: Form chỉnh sửa -->
+            <div class="profile-card">
+                <h3>Thông tin cá nhân</h3>
+                <form id="updateProfileForm">
+                    <div class="form-group">
+                        <label>Họ và tên</label>
+                        <input type="text" id="fullNameInput" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </form>
+
+                <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+                <h3>Đổi mật khẩu</h3>
+                <form id="changePassForm">
+                    <div class="form-group">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới" required>
+                    </div>
+                    <button type="submit" class="btn btn-outline">Cập nhật mật khẩu</button>
+                </form>
+                <div id="msg" class="message" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/profile.js"></script>
+</body>
+</html>

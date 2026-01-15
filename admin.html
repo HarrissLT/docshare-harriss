@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang quản trị - Upload tài liệu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Dùng chung CSS form của auth cho đẹp -->
+    <link rel="stylesheet" href="assets/css/auth.css"> 
+    <style>
+        /* CSS riêng cho trang admin */
+        .admin-container { max-width: 800px; margin: 50px auto; padding: 20px; }
+        .upload-card { background: white; padding: 40px; border-radius: 20px; box-shadow: var(--shadow-md); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; min-height: 100px; font-family: inherit; }
+        .file-upload { border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .file-upload:hover { border-color: var(--primary-color); background: #eef2ff; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Doc<span class="highlight">Share</span> Admin</a>
+            <div class="nav-auth">
+                <a href="index.html" class="btn btn-outline">Về trang chủ</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <div class="upload-card">
+            <h2 style="margin-bottom: 20px; color: var(--primary-color);">📤 Đăng tài liệu mới</h2>
+            
+<form id="uploadForm">
+                <div class="input-group">
+                    <label>Tên tài liệu</label>
+                    <input type="text" id="title" placeholder="Ví dụ: Giáo án PowerPoint Sinh học 12..." required>
+                </div>
+
+                <div class="form-grid">
+                    <!-- 1. CẬP NHẬT: Ô nhập môn học thông minh (Combobox) -->
+                    <div class="input-group">
+                        <label>Danh mục / Môn học</label>
+                        <!-- Dùng input list để vừa chọn được, vừa nhập mới được -->
+                        <input list="categoryOptions" id="category" placeholder="Chọn hoặc nhập môn mới..." required>
+                        <datalist id="categoryOptions">
+                            <option value="Toán học">
+                            <option value="Văn học">
+                            <option value="Tiếng Anh">
+                            <option value="Vật lý">
+                            <option value="Hóa học">
+                            <option value="Sinh học">
+                            <option value="Lịch sử">
+                            <option value="Địa lý">
+                            <option value="Tin học">
+                            <option value="Công nghệ">
+                            <option value="Giáo dục công dân">
+                            <option value="Tài liệu ôn thi">
+                        </datalist>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Giá bán (VNĐ) - Để 0 nếu Free</label>
+                        <input type="number" id="price" value="0" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Mô tả ngắn</label>
+                    <textarea id="description" placeholder="Giới thiệu về tài liệu..."></textarea>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Ảnh bìa (Thumbnail)</label>
+                        <div class="file-upload" onclick="document.getElementById('thumbFile').click()">
+                            <i class="fas fa-image" style="font-size: 2rem; color: #9ca3af;"></i>
+                            <p id="thumbName">Chọn ảnh...</p>
+                            <input type="file" id="thumbFile" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <!-- 2. CẬP NHẬT: Cho phép nhiều định dạng file -->
+                    <div class="input-group">
+                        <label>File tài liệu</label>
+                        <div class="file-upload" onclick="document.getElementById('docFile').click()">
+                            <i class="fas fa-file-upload" style="font-size: 2rem; color: #9ca3af;"></i>
+                            <p id="docName">Chọn file (PDF, Word, PPT, Zip...)</p>
+                            <!-- Thêm các đuôi file vào accept -->
+                            <input type="file" id="docFile" accept=".pdf, .doc, .docx, .ppt, .pptx, .zip, .rar" hidden>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top: 30px;">Đăng tài liệu</button>
+            </form>
+            <div id="msg" class="message"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/admin.js"></script>
+</body>
+</html>

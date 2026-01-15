@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài liệu yêu thích - DocShare</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Dùng chung style grid của library cho đẹp -->
+    <link rel="stylesheet" href="assets/css/library.css"> 
+</head>
+<body>
+
+    <!-- 1. NAVBAR CHUẨN -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Doc<span class="highlight">Share</span>.</a>
+            
+            <ul class="nav-links" id="navLinks">
+                <div class="close-btn-mobile" id="closeBtn"><i class="fas fa-times"></i></div>
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="library.html">Kho tài liệu</a></li>
+                <li id="navUpload" style="display: none;"><a href="admin.html">Đăng tài liệu</a></li>
+                <li id="navFavorites" style="display: none;"><a href="favorites.html" class="active">Tài liệu yêu thích</a></li>
+                <div class="mobile-auth-area" id="mobileAuth"></div>
+            </ul>
+
+            <div class="nav-auth-desktop" id="desktopAuth"></div>
+            <div class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- 2. HEADER -->
+    <section class="search-section" style="padding: 60px 0; background: linear-gradient(135deg, #ec4899, #8b5cf6);">
+        <div class="container" style="text-align: center; color: white;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Bộ sưu tập của bạn ❤️</h1>
+            <p>Lưu trữ những tài liệu hay nhất để xem lại bất cứ lúc nào.</p>
+        </div>
+    </section>
+
+    <!-- 3. DANH SÁCH YÊU THÍCH -->
+    <section class="library-content section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2 id="favCount">Đang tải...</h2>
+            </div>
+            
+            <div class="doc-grid" id="favList">
+                <p style="text-align: center; grid-column: 1/-1;">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/favorites.js"></script> <!-- File JS riêng -->
+</body>
+</html>

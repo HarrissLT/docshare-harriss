@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - DocShare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-box">
+            <h2>Tạo tài khoản mới</h2>
+            <p>Tham gia cộng đồng chia sẻ tài liệu lớn nhất.</p>
+            
+            <form id="registerForm">
+                <div class="input-group">
+                    <label>Họ và tên</label>
+                    <input type="text" id="fullName" placeholder="Nguyễn Văn A" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="email@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Mật khẩu</label>
+                    <input type="password" id="password" placeholder="Tối thiểu 6 ký tự" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Đăng ký ngay</button>
+            </form>
+
+            <div class="auth-footer">
+                Đã có tài khoản? <a href="login.html">Đăng nhập</a>
+            </div>
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- Script kết nối -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>

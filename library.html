@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kho tài liệu - DocShare</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/library.css">
+</head>
+<body>
+
+    <!-- 1. NAVBAR CHUẨN (Đã sửa lỗi giao diện) -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Doc<span class="highlight">Share</span>.</a>
+            
+            <ul class="nav-links" id="navLinks">
+                <div class="close-btn-mobile" id="closeBtn"><i class="fas fa-times"></i></div>
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="library.html" class="active">Kho tài liệu</a></li>
+                <li><a href="admin.html">Đăng tài liệu</a></li>
+                <div class="mobile-auth-area" id="mobileAuth"></div>
+            </ul>
+
+            <div class="nav-auth-desktop" id="desktopAuth"></div>
+
+            <div class="hamburger" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- 2. THANH TÌM KIẾM -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Nhập tên tài liệu, môn học...">
+                <button id="searchBtn"><i class="fas fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. DANH SÁCH TÀI LIỆU -->
+    <section class="library-content section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2 id="resultTitle">Tất cả tài liệu</h2>
+            </div>
+            
+            <!-- QUAN TRỌNG: ID này phải khớp với JS -->
+            <div class="doc-grid" id="libraryList">
+                <p style="text-align: center; grid-column: 1/-1; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SCRIPTS (Thứ tự bắt buộc) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/library.js"></script>
+</body>
+</html>

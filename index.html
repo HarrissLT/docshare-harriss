@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocShare - Nền tảng chia sẻ tài liệu</title>
+    
+    <!-- 1. FONTS & ICONS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- 2. CSS LIÊN KẾT -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body>
+
+    <!-- 3. NAVBAR CHUẨN (Responsive & Phân quyền) -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <!-- Logo -->
+            <!-- LOGO THƯƠNG HIỆU HARRISS -->
+<a href="index.html" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+    <!-- Avatar Thương hiệu -->
+    <img src="assets/images/logo.png" 
+         style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 5px rgba(79, 70, 229, 0.3);">
+    
+    <!-- Tên Thương hiệu -->
+    <div style="line-height: 1.2; display: flex; flex-direction: column;">
+        <span style="font-size: 1.4rem; font-weight: 800; color: #1F2937;">Doc<span style="color: #4F46E5;">Share</span>.</span>
+        <span style="font-size: 0.7rem; font-weight: 500; color: #6B7280; letter-spacing: 1px;">BY HARRISS</span>
+    </div>
+</a>
+            
+            <!-- Menu Links -->
+            <ul class="nav-links" id="navLinks">
+                <!-- Nút đóng menu (Chỉ hiện trên Mobile) -->
+                <div class="close-btn-mobile" id="closeBtn"><i class="fas fa-times"></i></div>
+                
+                <!-- Link chung -->
+                <li>
+                    <a href="index.html" class="active"><i class="fas fa-home" style="margin-right: 8px;"></i> Trang chủ</a>
+                </li>
+                <li>
+                    <a href="library.html"><i class="fas fa-book" style="margin-right: 8px;"></i> Kho tài liệu</a>
+                </li>
+
+                <!-- Link Admin (Mặc định ẩn - JS sẽ hiện nếu là Admin) -->
+                <li id="navUpload" style="display: none;">
+                    <a href="admin.html"><i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i> Đăng tài liệu</a>
+                </li>
+
+                <!-- Link User (Mặc định ẩn - JS sẽ hiện nếu là User) -->
+                <li id="navFavorites" style="display: none;">
+                    <a href="favorites.html"><i class="fas fa-heart" style="margin-right: 8px;"></i> Tài liệu yêu thích</a>
+                </li>
+                
+                <!-- Khu vực Auth Mobile (Ẩn trên PC) -->
+                <div class="mobile-auth-area" id="mobileAuth"></div>
+            </ul>
+
+            <!-- Khu vực Auth PC (Ẩn trên Mobile) -->
+            <div class="nav-auth-desktop" id="desktopAuth">
+                <!-- JS sẽ tự điền nút Đăng nhập hoặc Avatar vào đây -->
+                <div style="width: 100px; height: 40px;"></div> <!-- Giữ chỗ tránh nhảy layout -->
+            </div>
+
+            <!-- Nút 3 gạch (Chỉ hiện trên Mobile) -->
+            <div class="hamburger" id="hamburgerBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Lớp phủ mờ khi mở menu mobile -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- 4. HERO SECTION (BANNER) -->
+    <header class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="badge-new">✨ Cộng đồng học tập 4.0</span>
+                <h1>Kho tài liệu <br> <span class="text-gradient">Chất lượng cao</span></h1>
+                <p>Truy cập hàng ngàn giáo trình, đề thi, tài liệu tham khảo miễn phí và có phí. Chia sẻ kiến thức, nhận lại giá trị thực.</p>
+                <div class="hero-btns">
+                    <a href="library.html" class="btn btn-primary"><i class="fas fa-search"></i> Tìm tài liệu</a>
+                    <a href="register.html" class="btn btn-outline">Đăng ký ngay</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://placehold.co/600x400/e0e7ff/4F46E5?text=DocShare+Platform" alt="Learning Illustration">
+            </div>
+        </div>
+    </header>
+
+    <!-- 5. DANH SÁCH TÀI LIỆU MỚI NHẤT -->
+    <section class="featured section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2>Tài liệu mới nhất</h2>
+                <a href="library.html" class="view-all">Xem tất cả <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <!-- ID docList: Nơi home.js đổ dữ liệu vào -->
+            <div class="doc-grid" id="docList">
+                <p style="text-align: center; grid-column: 1/-1; padding: 20px; color: #666;">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. FOOTER -->
+<!-- FOOTER BẢN QUYỀN HARRISS -->
+<footer>
+    <div class="container" style="text-align: center; padding: 40px 0; color: #6b7280;">
+        <!-- Logo nhỏ ở footer -->
+        <div style="margin-bottom: 20px;">
+            <span style="font-weight: 700; font-size: 1.2rem; color: #1F2937;">Harriss<span style="color: #4F46E5;">.</span></span>
+        </div>
+
+        <p style="margin-bottom: 15px;">Nền tảng chia sẻ tài liệu trực tuyến hàng đầu.</p>
+        
+        <!-- Bản quyền -->
+        <p style="font-size: 0.9rem;">
+            &copy; 2026 Bản quyền thuộc về <strong style="color: #4F46E5;">Harriss</strong>. All rights reserved.
+        </p>
+
+        <!-- Mạng xã hội -->
+        <div style="margin-top: 20px; font-size: 1.5rem;">
+            <a href="#" style="color: #1877f2; margin: 0 10px;"><i class="fab fa-facebook"></i></a>
+            <a href="#" style="color: #333; margin: 0 10px;"><i class="fab fa-github"></i></a>
+            <a href="#" style="color: #ea4335; margin: 0 10px;"><i class="fab fa-google"></i></a>
+        </div>
+    </div>
+</footer>
+
+    <!-- 7. SCRIPTS (Thứ tự Load rất quan trọng) -->
+    
+    <!-- A. Thư viện Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- B. File cấu hình (Chứa API Key) -->
+    <script src="assets/js/config.js"></script>
+    
+    <!-- C. File xử lý User & Menu (Chứa logic phân quyền Admin/User) -->
+    <script src="assets/js/auth.js"></script>
+    
+    <!-- D. File xử lý hiển thị tài liệu trang chủ -->
+    <script src="assets/js/home.js"></script>
+<!-- NÚT CHAT ZALO -->
+    <a href="https://zalo.me/0368132628" target="_blank" class="zalo-chat-widget" title="Chat với Admin Harriss">
+        <!-- Icon Zalo (Dùng link ảnh logo Zalo trắng) -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/1200px-Icon_of_Zalo.svg.png" 
+             style="filter: brightness(0) invert(1);" alt="Zalo">
+    </a>
+</body>
+</html>
