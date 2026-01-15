@@ -1,5 +1,5 @@
 // assets/js/detail.js
-// PHIÊN BẢN HOÀN CHỈNH: DOWNLOAD, PAYMENT MODAL, FAVORITES, FILE TYPES
+// PHIÊN BẢN: FULL TÍNH NĂNG (DEMO ẢNH, DOWNLOAD, MUA, YÊU THÍCH)
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -7,14 +7,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const docId = params.get('id');
 
-    // Biến toàn cục lưu dữ liệu tài liệu để dùng chung
+    // Biến toàn cục lưu dữ liệu
     let currentDocData = null; 
 
     // Các Element giao diện
     const btnDownload = document.getElementById('btnDownload');
-    const btnFavorite = document.querySelector('.btn-outline'); // Nút tim
+    const btnFavorite = document.querySelector('.btn-outline'); 
     const paymentModal = document.getElementById('paymentModal');
     const closePaymentBtn = document.getElementById('closePaymentBtn');
+    
+    // Element Lightbox (Xem ảnh phóng to)
+    const lightboxModal = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const closeLightbox = document.querySelector('.close-lightbox');
 
     // Nếu không có ID -> Về trang chủ
     if (!docId) {
@@ -46,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Lưu dữ liệu vào biến toàn cục
         currentDocData = doc;
 
-        // --- ĐIỀN DỮ LIỆU VÀO HTML ---
+        // --- ĐIỀN DỮ LIỆU CƠ BẢN ---
         document.title = `${doc.title} - DocShare`;
         document.getElementById('docTitle').textContent = doc.title;
         document.getElementById('docCategory').textContent = doc.category || 'Tài liệu';
@@ -54,12 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('docDownloads').textContent = doc.downloads || 0;
         document.getElementById('docDesc').textContent = doc.description || "Chưa có mô tả cho tài liệu này.";
         
-        // Xử lý ảnh bìa (Nếu lỗi link thì dùng ảnh mặc định)
+        // Ảnh bìa
         const thumbImg = document.getElementById('docThumb');
         thumbImg.src = doc.thumbnail_url || 'https://placehold.co/300x200?text=No+Image';
         thumbImg.onerror = () => { thumbImg.src = 'https://placehold.co/300x200?text=Error'; };
 
-        // Xử lý Giá tiền
+        // Giá tiền
         const priceEl = document.getElementById('docPrice');
         if (doc.price === 0) {
             priceEl.textContent = "Miễn phí";
@@ -68,7 +73,33 @@ document.addEventListener('DOMContentLoaded', () => {
             priceEl.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(doc.price);
         }
 
-        // --- TỰ ĐỘNG NHẬN DIỆN LOẠI FILE ---
+        // --- XỬ LÝ ẢNH DEMO (XEM TRƯỚC) ---
+        const demoSection = document.getElementById('demoSection');
+        const demoGrid = document.getElementById('demoGrid');
+        
+        // Kiểm tra xem có ảnh demo không (và mảng không rỗng)
+        if (doc.demo_urls && Array.isArray(doc.demo_urls) && doc.demo_urls.length > 0) {
+            if (demoSection) demoSection.style.display = 'block'; // Hiện khu vực demo
+            if (demoGrid) {
+                demoGrid.innerHTML = ''; // Xóa cũ
+                doc.demo_urls.forEach(url => {
+                    const div = document.createElement('div');
+                    div.className = 'demo-item';
+                    div.innerHTML = `<img src="${url}" alt="Demo page">`;
+                    
+                    // Sự kiện click để phóng to
+                    div.addEventListener('click', () => {
+                        openLightbox(url);
+                    });
+                    
+                    demoGrid.appendChild(div);
+                });
+            }
+        } else {
+            if (demoSection) demoSection.style.display = 'none'; // Ẩn nếu không có
+        }
+
+        // --- NHẬN DIỆN LOẠI FILE ---
         const fileExt = doc.file_url.split('.').pop().toLowerCase();
         let fileTypeIcon = '<i class="fas fa-file-alt" style="color: gray;"></i>';
         let fileTypeName = 'Tài liệu';
@@ -87,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
             fileTypeName = 'File nén (Zip/Rar)';
         }
 
-        // Cập nhật thông tin bản quyền Harriss & Loại file
         const infoBox = document.querySelector('.action-box p');
         if (infoBox) {
             infoBox.innerHTML = `
@@ -96,16 +126,37 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        // Kiểm tra xem user đã like bài này chưa
+        // Kiểm tra trạng thái yêu thích
         checkFavoriteStatus();
     }
 
     // ================================================================
-    // 3. XỬ LÝ SỰ KIỆN DOWNLOAD (MIỄN PHÍ & CÓ PHÍ)
+    // 3. XỬ LÝ LIGHTBOX (PHÓNG TO ẢNH)
+    // ================================================================
+    function openLightbox(src) {
+        if (lightboxModal && lightboxImg) {
+            lightboxModal.style.display = "block";
+            lightboxImg.src = src;
+        }
+    }
+
+    if (closeLightbox) {
+        closeLightbox.addEventListener('click', () => {
+            lightboxModal.style.display = "none";
+        });
+    }
+    
+    if (lightboxModal) {
+        lightboxModal.addEventListener('click', (e) => {
+            if (e.target === lightboxModal) lightboxModal.style.display = "none";
+        });
+    }
+
+    // ================================================================
+    // 4. XỬ LÝ DOWNLOAD
     // ================================================================
     if (btnDownload) {
         btnDownload.addEventListener('click', async () => {
-            // A. Kiểm tra đăng nhập
             const { data: { user } } = await window.supabaseClient.auth.getUser();
             if (!user) {
                 alert("Bạn cần đăng nhập để tải tài liệu này!");
@@ -113,72 +164,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-// ... (Phần kiểm tra đăng nhập và giá tiền giữ nguyên) ...
-
-            // B. Kiểm tra giá tiền
             if (currentDocData.price > 0) {
-                // -> CÓ PHÍ: Hiện Modal hướng dẫn mua
                 showPaymentModal();
             } else {
-                // -> MIỄN PHÍ: TẢI LUÔN (CODE MỚI CHO MOBILE)
                 try {
-                    // Tăng lượt tải (nếu có RPC)
-                    window.supabaseClient.rpc('increment_downloads', { doc_id: docId });
+                    await window.supabaseClient.rpc('increment_downloads', { doc_id: docId });
                 } catch (e) {}
-
-                // --- FIX LỖI MOBILE: Dùng thẻ <a> thay vì window.open ---
+                
+                // Fix lỗi tải trên Mobile
                 const link = document.createElement('a');
                 link.href = currentDocData.file_url;
-                link.target = '_blank'; // Mở tab mới
-                link.download = currentDocData.title; // Gợi ý tên file khi tải
+                link.target = '_blank';
+                link.download = currentDocData.title;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             }
-                });
+        });
     }
 
     // ================================================================
-    // 4. XỬ LÝ MODAL THANH TOÁN (MÀU VÀNG)
+    // 5. XỬ LÝ MODAL THANH TOÁN
     // ================================================================
     function showPaymentModal() {
         if (!currentDocData) return;
-
-        // Điền thông tin vào Modal
         document.getElementById('payDocName').textContent = currentDocData.title;
         document.getElementById('payDocId').textContent = currentDocData.id;
         document.getElementById('payDocPrice').textContent = new Intl.NumberFormat('vi-VN').format(currentDocData.price) + 'đ';
-        
-        // Hiện Modal
         if (paymentModal) paymentModal.classList.add('active');
     }
 
-    // Đóng Modal
     if (closePaymentBtn) {
-        closePaymentBtn.addEventListener('click', () => {
-            paymentModal.classList.remove('active');
-        });
+        closePaymentBtn.addEventListener('click', () => paymentModal.classList.remove('active'));
     }
-
-    // Bấm ra ngoài vùng tối cũng đóng
     if (paymentModal) {
         paymentModal.addEventListener('click', (e) => {
-            if (e.target === paymentModal) {
-                paymentModal.classList.remove('active');
-            }
+            if (e.target === paymentModal) paymentModal.classList.remove('active');
         });
     }
 
     // ================================================================
-    // 5. XỬ LÝ YÊU THÍCH (FAVORITES)
+    // 6. XỬ LÝ YÊU THÍCH
     // ================================================================
-    
-    // Hàm kiểm tra trạng thái ban đầu
     async function checkFavoriteStatus() {
         const { data: { user } } = await window.supabaseClient.auth.getUser();
         if (!user || !btnFavorite) return;
 
-        // Dùng maybeSingle() để tránh lỗi 406 nếu chưa like
         const { data: existing } = await window.supabaseClient
             .from('favorites')
             .select('id')
@@ -195,10 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Sự kiện bấm nút tim
     if (btnFavorite) {
         btnFavorite.addEventListener('click', async () => {
-            // Kiểm tra đăng nhập
             const { data: { user } } = await window.supabaseClient.auth.getUser();
             if (!user) {
                 alert("Vui lòng đăng nhập để lưu tài liệu!");
@@ -206,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Nếu đang ở trạng thái "Đã yêu thích" -> Xóa
             if (btnFavorite.innerHTML.includes('Đã yêu thích')) {
                 if(confirm("Bỏ tài liệu này khỏi danh sách yêu thích?")) {
                     const { error } = await window.supabaseClient
@@ -218,14 +246,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!error) {
                         btnFavorite.innerHTML = '<i class="far fa-heart"></i> Lưu yêu thích';
                         btnFavorite.classList.remove('active');
-                    } else {
-                        alert("Lỗi khi xóa: " + error.message);
                     }
                 }
                 return;
             }
 
-            // Nếu chưa yêu thích -> Thêm mới
             const originalText = btnFavorite.innerHTML;
             btnFavorite.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
 
@@ -234,8 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .insert({ user_id: user.id, document_id: docId });
 
             if (error) {
-                console.error("Lỗi:", error);
-                alert("Không thể lưu: " + error.message);
+                alert("Lỗi: " + error.message);
                 btnFavorite.innerHTML = originalText;
             } else {
                 alert("Đã thêm vào danh sách yêu thích!");
@@ -245,8 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ================================================================
-    // 6. KHỞI CHẠY
-    // ================================================================
+    // KHỞI CHẠY
     loadDetail();
 });

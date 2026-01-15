@@ -34,7 +34,36 @@
             <h2 style="margin-bottom: 20px; color: var(--primary-color);">📤 Đăng tài liệu mới</h2>
             
 <form id="uploadForm">
-                <div class="input-group">
+                    <!-- 1. Ảnh bìa (Giữ nguyên) -->
+                    <div class="input-group">
+                        <label>Ảnh bìa (Thumbnail)</label>
+                        <div class="file-upload" onclick="document.getElementById('thumbFile').click()">
+                            <i class="fas fa-image" style="font-size: 2rem; color: #9ca3af;"></i>
+                            <p id="thumbName">Chọn ảnh bìa...</p>
+                            <input type="file" id="thumbFile" accept="image/*" hidden>
+                        </div>
+                    </div>
+
+                    <!-- 2. THÊM MỚI: Ảnh Demo (Chọn nhiều ảnh) -->
+                    <div class="input-group">
+                        <label>Ảnh xem trước (Demo) - Chọn nhiều ảnh</label>
+                        <div class="file-upload" onclick="document.getElementById('demoFiles').click()">
+                            <i class="fas fa-images" style="font-size: 2rem; color: #6366f1;"></i>
+                            <p id="demoNames">Chọn các trang demo...</p>
+                            <!-- multiple: Cho phép chọn nhiều file cùng lúc -->
+                            <input type="file" id="demoFiles" accept="image/*" multiple hidden>
+                        </div>
+                    </div>
+
+                    <!-- 3. File tài liệu (Giữ nguyên) -->
+                    <div class="input-group">
+                        <label>File tài liệu</label>
+                        <div class="file-upload" onclick="document.getElementById('docFile').click()">
+                            <i class="fas fa-file-upload" style="font-size: 2rem; color: #9ca3af;"></i>
+                            <p id="docName">Chọn file (PDF, Word, Zip...)</p>
+                            <input type="file" id="docFile" accept=".pdf, .doc, .docx, .ppt, .pptx, .zip, .rar" hidden>
+                        </div>
+                    </div>
                     <label>Tên tài liệu</label>
                     <input type="text" id="title" placeholder="Ví dụ: Giáo án PowerPoint Sinh học 12..." required>
                 </div>
@@ -94,7 +123,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-full" style="margin-top: 30px;">Đăng tài liệu</button>
+                <button type="submit" id="btnUpload" class="btn btn-primary btn-full" style="margin-top: 30px;">Đăng tài liệu</button>
             </form>
             <div id="msg" class="message"></div>
         </div>

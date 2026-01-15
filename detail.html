@@ -47,6 +47,16 @@
             </div>
 
             <div class="description-box">
+                <!-- KHU VỰC ẢNH DEMO (Chèn vào cột trái, trên phần Mô tả) -->
+            <div class="demo-section" id="demoSection" style="display: none; margin-top: 30px;">
+                <h3><i class="fas fa-images"></i> Xem trước tài liệu</h3>
+                <div class="demo-grid" id="demoGrid">
+                    <!-- JS sẽ điền ảnh vào đây -->
+                </div>
+            </div>
+
+            <!-- Phần Mô tả cũ (Giữ nguyên) -->
+            <div class="description-box">
                 <h3>Mô tả tài liệu</h3>
                 <p id="docDesc">...</p>
             </div>
@@ -106,5 +116,10 @@
                 </a>
             </div>
         </div>
+    </div>
+    <!-- LIGHTBOX (MODAL XEM ẢNH PHÓNG TO) -->
+    <div id="lightboxModal" class="lightbox-overlay">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightboxImg">
     </div>
 </html>

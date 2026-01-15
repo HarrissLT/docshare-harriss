@@ -1,135 +1,212 @@
 // assets/js/admin.js
+// PHIÊN BẢN HOÀN CHỈNH: UPLOAD ĐA NĂNG, CHECK QUYỀN, XỬ LÝ ẢNH DEMO
 
-// 1. HÀM XỬ LÝ TÊN FILE
-function sanitizeFilename(name) {
-    return name.normalize('NFD')
-               .replace(/[\u0300-\u036f]/g, '')
-               .replace(/đ/g, 'd').replace(/Đ/g, 'D')
-               .replace(/\s+/g, '-')
-               .replace(/[^a-zA-Z0-9.-]/g, '')
-               .toLowerCase();
-}
+document.addEventListener('DOMContentLoaded', () => {
 
-// 2. KIỂM TRA QUYỀN ADMIN (Đã nâng cấp để báo lỗi rõ hơn)
-// assets/js/admin.js
-
-async function checkAdmin() {
-    console.log("Đang kiểm tra quyền Admin...");
-
-    // A. Kiểm tra đăng nhập
-    const { data: { user } } = await window.supabaseClient.auth.getUser();
-    if (!user) {
-        alert("Bạn chưa đăng nhập! Vui lòng đăng nhập để tiếp tục.");
-        window.location.href = 'login.html';
-        return;
+    // ================================================================
+    // 1. HÀM TIỆN ÍCH: CHUYỂN TÊN FILE VỀ DẠNG AN TOÀN
+    // ================================================================
+    function sanitizeFilename(name) {
+        return name.normalize('NFD')
+                   .replace(/[\u0300-\u036f]/g, '') // Bỏ dấu tiếng Việt
+                   .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+                   .replace(/\s+/g, '-') // Chuyển khoảng trắng thành gạch ngang
+                   .replace(/[^a-zA-Z0-9.-]/g, '') // Bỏ ký tự đặc biệt
+                   .toLowerCase(); // Chuyển về chữ thường
     }
 
-    // B. Kiểm tra Role trong Database
-    const { data: profile, error } = await window.supabaseClient
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
+    // ================================================================
+    // 2. KIỂM TRA QUYỀN ADMIN (BẢO MẬT)
+    // ================================================================
+    async function checkAdmin() {
+        // Kiểm tra xem Supabase đã load chưa
+        if (!window.supabaseClient) {
+            console.error("Supabase chưa load!");
+            return;
+        }
 
-    if (error) {
-        alert("Lỗi kết nối: " + error.message);
-        window.location.href = 'index.html';
-        return;
+        const { data: { user } } = await window.supabaseClient.auth.getUser();
+        
+        if (!user) {
+            alert("Vui lòng đăng nhập tài khoản Admin!");
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Lấy role từ bảng profiles
+        const { data: profile, error } = await window.supabaseClient
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single();
+
+        if (error || !profile) {
+            alert("Lỗi kiểm tra quyền hạn. Vui lòng thử lại.");
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Xử lý chuỗi role (cắt khoảng trắng, chuyển thường)
+        const role = profile.role ? profile.role.trim().toLowerCase() : '';
+
+        if (role !== 'admin') {
+            alert("Truy cập bị từ chối! Bạn không phải là Admin.");
+            window.location.href = 'index.html';
+        } else {
+            console.log("Đã xác thực quyền Admin.");
+        }
     }
 
-    // --- ĐOẠN SỬA QUAN TRỌNG Ở ĐÂY ---
-    // Lấy role, cắt khoảng trắng thừa (trim), và chuyển về chữ thường
-    const userRole = profile && profile.role ? profile.role.trim().toLowerCase() : '';
+    // Chạy kiểm tra ngay khi vào trang
+    checkAdmin();
 
-    if (userRole !== 'admin') {
-        // In ra để debug xem nó đang là gì
-        console.log("Role hiện tại:", userRole); 
-        alert(`Truy cập bị từ chối! Tài khoản của bạn là: "${userRole}". Chỉ "admin" mới được vào.`);
-        window.location.href = 'index.html';
-    } else {
-        console.log("Chào mừng Admin!");
-        // Không làm gì cả, cho phép ở lại trang
-    }
-}
-// Chạy hàm kiểm tra ngay lập tức
-checkAdmin();
-
-// --- CÁC PHẦN DƯỚI GIỮ NGUYÊN ---
-
-document.getElementById('thumbFile').addEventListener('change', function() {
-    if(this.files[0]) document.getElementById('thumbName').textContent = this.files[0].name;
-});
-document.getElementById('docFile').addEventListener('change', function() {
-    if(this.files[0]) document.getElementById('docName').textContent = this.files[0].name;
-});
-
-document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const msg = document.getElementById('msg');
-    const btn = e.target.querySelector('button');
+    // ================================================================
+    // 3. XỬ LÝ GIAO DIỆN CHỌN FILE
+    // ================================================================
     
-    const title = document.getElementById('title').value;
-    const category = document.getElementById('category').value;
-    const price = document.getElementById('price').value;
-    const desc = document.getElementById('description').value;
-    const thumbFile = document.getElementById('thumbFile').files[0];
-    const docFile = document.getElementById('docFile').files[0];
-
-    if (!thumbFile || !docFile) {
-        msg.textContent = "Vui lòng chọn đủ Ảnh bìa và File tài liệu!";
-        msg.className = "message error";
-        return;
+    // Hiển thị tên Ảnh bìa
+    const thumbInput = document.getElementById('thumbFile');
+    if (thumbInput) {
+        thumbInput.addEventListener('change', function() {
+            if(this.files[0]) document.getElementById('thumbName').textContent = this.files[0].name;
+        });
     }
 
-    try {
-        msg.textContent = "Đang upload file... Vui lòng chờ!";
-        msg.className = "message";
-        btn.disabled = true;
-        btn.textContent = "Đang xử lý...";
-
-        const timeStamp = Date.now();
-
-        // Upload Ảnh
-        const cleanThumbName = sanitizeFilename(thumbFile.name);
-        const thumbPath = `thumb_${timeStamp}_${cleanThumbName}`;
-        const { error: errThumb } = await window.supabaseClient.storage.from('images').upload(thumbPath, thumbFile);
-        if (errThumb) throw errThumb;
-        const { data: { publicUrl: thumbUrl } } = window.supabaseClient.storage.from('images').getPublicUrl(thumbPath);
-
-        // Upload PDF
-        const cleanDocName = sanitizeFilename(docFile.name);
-        const docPath = `doc_${timeStamp}_${cleanDocName}`;
-        const { error: errDoc } = await window.supabaseClient.storage.from('files').upload(docPath, docFile);
-        if (errDoc) throw errDoc;
-        const { data: { publicUrl: docUrl } } = window.supabaseClient.storage.from('files').getPublicUrl(docPath);
-
-        // Lưu DB
-        const { error: errDb } = await window.supabaseClient.from('documents').insert({
-            title: title,
-            description: desc,
-            price: parseInt(price),
-            category: category,
-            thumbnail_url: thumbUrl,
-            file_url: docUrl
+    // Hiển thị tên File tài liệu
+    const docInput = document.getElementById('docFile');
+    if (docInput) {
+        docInput.addEventListener('change', function() {
+            if(this.files[0]) document.getElementById('docName').textContent = this.files[0].name;
         });
+    }
 
-        if (errDb) throw errDb;
+    // Hiển thị số lượng Ảnh Demo
+    const demoInput = document.getElementById('demoFiles');
+    if (demoInput) {
+        demoInput.addEventListener('change', function() {
+            if(this.files.length > 0) {
+                document.getElementById('demoNames').textContent = `Đã chọn ${this.files.length} ảnh`;
+            } else {
+                document.getElementById('demoNames').textContent = "Chọn các trang demo...";
+            }
+        });
+    }
 
-        msg.textContent = "Đăng tài liệu thành công! Đang về trang chủ...";
-        msg.className = "message success";
-        
-        document.getElementById('uploadForm').reset();
-        
-        setTimeout(() => {
-            window.location.href = "index.html";
-        }, 1500);
+    // ================================================================
+    // 4. XỬ LÝ UPLOAD & ĐĂNG BÀI (MAIN LOGIC)
+    // ================================================================
+    const uploadForm = document.getElementById('uploadForm');
+    
+    if (uploadForm) {
+uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const msg = document.getElementById('msg');
+            // Sửa lại dòng này để tìm đúng ID vừa đặt
+            const btn = document.getElementById('btnUpload') || e.target.querySelector('button');            
+            // Lấy dữ liệu từ Form
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const price = document.getElementById('price').value;
+            const desc = document.getElementById('description').value;
+            
+            const thumbFile = thumbInput.files[0];
+            const docFile = docInput.files[0];
+            const demoFiles = demoInput ? demoInput.files : []; // Lấy danh sách ảnh demo
 
-    } catch (error) {
-        console.error(error);
-        msg.textContent = "Lỗi: " + error.message;
-        msg.className = "message error";
-    } finally {
-        btn.disabled = false;
-        btn.textContent = "Đăng tài liệu";
+            // Validate cơ bản
+            if (!thumbFile || !docFile) {
+                msg.textContent = "Vui lòng chọn đủ Ảnh bìa và File tài liệu!";
+                msg.className = "message error";
+                return;
+            }
+
+            try {
+                // Bắt đầu xử lý -> Khóa nút bấm
+                msg.textContent = "Đang upload dữ liệu... Vui lòng không tắt tab.";
+                msg.className = "message";
+                btn.disabled = true;
+                btn.textContent = "Đang xử lý...";
+
+                const timeStamp = Date.now();
+
+                // --- BƯỚC A: UPLOAD ẢNH BÌA ---
+                const cleanThumbName = sanitizeFilename(thumbFile.name);
+                const thumbPath = `thumb_${timeStamp}_${cleanThumbName}`;
+                
+                const { error: errThumb } = await window.supabaseClient.storage.from('images').upload(thumbPath, thumbFile);
+                if (errThumb) throw new Error("Lỗi upload ảnh bìa: " + errThumb.message);
+                
+                const { data: { publicUrl: thumbUrl } } = window.supabaseClient.storage.from('images').getPublicUrl(thumbPath);
+
+                // --- BƯỚC B: UPLOAD FILE TÀI LIỆU ---
+                const cleanDocName = sanitizeFilename(docFile.name);
+                const docPath = `doc_${timeStamp}_${cleanDocName}`;
+                
+                const { error: errDoc } = await window.supabaseClient.storage.from('files').upload(docPath, docFile);
+                if (errDoc) throw new Error("Lỗi upload tài liệu: " + errDoc.message);
+
+                const { data: { publicUrl: docUrl } } = window.supabaseClient.storage.from('files').getPublicUrl(docPath);
+
+                // --- BƯỚC C: UPLOAD ẢNH DEMO (NẾU CÓ) ---
+                let demoUrls = [];
+                if (demoFiles.length > 0) {
+                    msg.textContent = `Đang upload ${demoFiles.length} ảnh demo...`;
+                    
+                    for (let i = 0; i < demoFiles.length; i++) {
+                        const file = demoFiles[i];
+                        const cleanName = sanitizeFilename(file.name);
+                        const path = `demo_${timeStamp}_${i}_${cleanName}`;
+                        
+                        // Upload từng ảnh vào bucket 'images'
+                        const { error: errDemo } = await window.supabaseClient.storage.from('images').upload(path, file);
+                        
+                        if (!errDemo) {
+                            const { data: { publicUrl } } = window.supabaseClient.storage.from('images').getPublicUrl(path);
+                            demoUrls.push(publicUrl);
+                        } else {
+                            console.warn("Lỗi upload ảnh demo số " + i, errDemo);
+                        }
+                    }
+                }
+
+                // --- BƯỚC D: LƯU VÀO DATABASE ---
+                msg.textContent = "Đang lưu thông tin...";
+                
+                const { error: errDb } = await window.supabaseClient.from('documents').insert({
+                    title: title,
+                    description: desc,
+                    price: parseInt(price),
+                    category: category,
+                    thumbnail_url: thumbUrl,
+                    file_url: docUrl,
+                    demo_urls: demoUrls // Lưu mảng link ảnh demo
+                });
+
+                if (errDb) throw new Error("Lỗi lưu Database: " + errDb.message);
+
+                // --- HOÀN TẤT ---
+                msg.textContent = "Đăng tài liệu thành công! Đang chuyển hướng...";
+                msg.className = "message success";
+                uploadForm.reset();
+                
+                // Reset text hiển thị file
+                document.getElementById('thumbName').textContent = "Chọn ảnh...";
+                document.getElementById('docName').textContent = "Chọn file...";
+                if(document.getElementById('demoNames')) document.getElementById('demoNames').textContent = "Chọn các trang demo...";
+                
+                // Chuyển về trang chủ sau 1.5s
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
+
+            } catch (error) {
+                console.error(error);
+                msg.textContent = error.message;
+                msg.className = "message error";
+                btn.disabled = false;
+                btn.textContent = "Đăng tài liệu";
+            }
+        });
     }
 });
