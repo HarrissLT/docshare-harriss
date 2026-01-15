@@ -15,28 +15,50 @@
 </head>
 <body>
 
-    <!-- 1. NAVBAR CHUẨN (Đã sửa lỗi giao diện) -->
+<!-- NAVBAR CHUẨN (Copy đè vào library.html và các trang khác) -->
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo">Doc<span class="highlight">Share</span>.</a>
+            <!-- 1. LOGO THƯƠNG HIỆU HARRISS -->
+            <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                <img src="https://placehold.co/100x100/4F46E5/ffffff?text=H" alt="Harriss Logo" 
+                     style="width: 40px; height: 40px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 5px rgba(79, 70, 229, 0.3);">
+                <div style="line-height: 1.2; display: flex; flex-direction: column;">
+                    <span style="font-size: 1.4rem; font-weight: 800; color: #1F2937;">Doc<span style="color: #4F46E5;">Share</span>.</span>
+                    <span style="font-size: 0.7rem; font-weight: 500; color: #6B7280; letter-spacing: 1px;">BY HARRISS</span>
+                </div>
+            </a>
             
+            <!-- 2. MENU LINKS -->
             <ul class="nav-links" id="navLinks">
                 <div class="close-btn-mobile" id="closeBtn"><i class="fas fa-times"></i></div>
-                <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="library.html" class="active">Kho tài liệu</a></li>
-                <li><a href="admin.html">Đăng tài liệu</a></li>
+                
+                <li><a href="index.html"><i class="fas fa-home" style="margin-right: 8px;"></i> Trang chủ</a></li>
+                <li><a href="library.html" class="active"><i class="fas fa-book" style="margin-right: 8px;"></i> Kho tài liệu</a></li>
+                
+                <!-- Menu ẩn hiện theo quyền -->
+                <li id="navUpload" style="display: none;">
+                    <a href="admin.html"><i class="fas fa-cloud-upload-alt" style="margin-right: 8px;"></i> Đăng tài liệu</a>
+                </li>
+                <li id="navFavorites" style="display: none;">
+                    <a href="favorites.html"><i class="fas fa-heart" style="margin-right: 8px;"></i> Tài liệu yêu thích</a>
+                </li>
+                
                 <div class="mobile-auth-area" id="mobileAuth"></div>
             </ul>
 
+            <!-- 3. AUTH PC -->
             <div class="nav-auth-desktop" id="desktopAuth"></div>
 
+            <!-- 4. NÚT 3 GẠCH MOBILE -->
             <div class="hamburger" id="hamburgerBtn">
                 <i class="fas fa-bars"></i>
             </div>
         </div>
     </nav>
+    
+    <!-- Overlay -->
     <div class="menu-overlay" id="menuOverlay"></div>
-
+    
     <!-- 2. THANH TÌM KIẾM -->
     <section class="search-section">
         <div class="container">

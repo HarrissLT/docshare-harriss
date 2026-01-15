@@ -113,23 +113,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+// ... (Phần kiểm tra đăng nhập và giá tiền giữ nguyên) ...
+
             // B. Kiểm tra giá tiền
             if (currentDocData.price > 0) {
                 // -> CÓ PHÍ: Hiện Modal hướng dẫn mua
                 showPaymentModal();
             } else {
-                // -> MIỄN PHÍ: Tải luôn
+                // -> MIỄN PHÍ: TẢI LUÔN (CODE MỚI CHO MOBILE)
                 try {
-                    // Gọi hàm RPC để tăng lượt tải (Nếu chưa tạo RPC thì bỏ qua lỗi này)
-                    await window.supabaseClient.rpc('increment_downloads', { doc_id: docId });
-                } catch (err) {
-                    console.log("Chưa cấu hình RPC tăng lượt tải, nhưng vẫn cho tải file.");
-                }
-                
-                // Mở file trong tab mới
-                window.open(currentDocData.file_url, '_blank');
+                    // Tăng lượt tải (nếu có RPC)
+                    window.supabaseClient.rpc('increment_downloads', { doc_id: docId });
+                } catch (e) {}
+
+                // --- FIX LỖI MOBILE: Dùng thẻ <a> thay vì window.open ---
+                const link = document.createElement('a');
+                link.href = currentDocData.file_url;
+                link.target = '_blank'; // Mở tab mới
+                link.download = currentDocData.title; // Gợi ý tên file khi tải
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
-        });
+                });
     }
 
     // ================================================================

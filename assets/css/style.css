@@ -590,3 +590,26 @@ footer {
     background: #0054cc;
     transform: translateY(-2px);
 }
+/* --- FIX LỖI MENU MOBILE --- */
+@media (max-width: 768px) {
+    /* Đảm bảo Menu nằm trên cùng, không bị che */
+    .nav-links {
+        z-index: 9999 !important; /* Ưu tiên cao nhất */
+        width: 80% !important; /* Rộng hơn chút cho dễ nhìn */
+        max-width: 300px;
+    }
+
+    /* Đảm bảo lớp phủ mờ nằm ngay dưới menu */
+    .menu-overlay {
+        z-index: 9998 !important;
+    }
+
+    /* Chỉnh lại Logo trên mobile cho đỡ bị lệch */
+    .logo img {
+        width: 35px !important;
+        height: 35px !important;
+    }
+    .logo span {
+        font-size: 1.2rem !important;
+    }
+}
