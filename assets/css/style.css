@@ -692,3 +692,89 @@ footer {
     cursor: pointer;
 }
 .close-lightbox:hover { color: #bbb; }
+/* --- FILTER BUTTONS (GIAO DIỆN MỚI: HIỆN ĐẠI & NỔI BẬT) --- */
+.filter-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap; /* Xuống dòng nếu màn hình quá nhỏ */
+}
+
+.filter-btn {
+    background: white; /* Nền trắng sạch sẽ */
+    color: var(--text-main); /* Chữ màu tối dễ đọc */
+    border: 2px solid transparent; /* Viền ẩn để giữ kích thước */
+    padding: 12px 30px; /* Nút to hơn, dễ bấm */
+    border-radius: 50px; /* Bo tròn hoàn toàn */
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    
+    /* Hiệu ứng đổ bóng giúp nút nổi lên */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Căn chỉnh icon và chữ */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-btn i {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    transition: 0.3s;
+}
+
+/* Hiệu ứng khi di chuột vào (Hover) */
+.filter-btn:hover {
+    transform: translateY(-3px); /* Bay lên nhẹ */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    color: var(--primary-color);
+}
+
+.filter-btn:hover i {
+    color: var(--primary-color);
+}
+
+/* --- TRẠNG THÁI ĐANG CHỌN (ACTIVE) --- */
+.filter-btn.active {
+    /* Màu Gradient thương hiệu */
+    background: linear-gradient(135deg, var(--primary-color), #6366f1);
+    color: white;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4); /* Đổ bóng màu tím */
+    transform: scale(1.05); /* Phóng to nhẹ để nhấn mạnh */
+    border-color: transparent;
+}
+
+.filter-btn.active i {
+    color: white; /* Icon chuyển sang trắng */
+}
+
+/* --- MÀU RIÊNG CHO TỪNG NÚT KHI ACTIVE (TÙY CHỌN CHO ĐẸP HƠN) --- */
+
+/* Nút Miễn phí khi chọn -> Màu xanh lá */
+.filter-btn[data-filter="free"].active {
+    background: linear-gradient(135deg, #10B981, #059669);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* Nút Có phí khi chọn -> Màu vàng cam */
+.filter-btn[data-filter="paid"].active {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Responsive Mobile */
+@media (max-width: 768px) {
+    .filter-container {
+        gap: 10px;
+    }
+    .filter-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        flex: 1; /* Chia đều chiều rộng trên mobile */
+        justify-content: center;
+    }
+}

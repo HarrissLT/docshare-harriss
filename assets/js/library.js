@@ -1,10 +1,16 @@
 // assets/js/library.js
+// PHIÊN BẢN: TÌM KIẾM + LỌC (FREE/PAID)
 
 document.addEventListener('DOMContentLoaded', () => {
     const libraryList = document.getElementById('libraryList');
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const resultTitle = document.getElementById('resultTitle');
+    const filterBtns = document.querySelectorAll('.filter-btn'); // Lấy các nút lọc
+
+    // Biến lưu trạng thái hiện tại
+    let currentFilter = 'all'; // all, free, paid
+    let currentKeyword = '';
 
     // 1. Hàm định dạng tiền
     const formatPrice = (price) => {
@@ -12,24 +18,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<span class="tag premium">${new Intl.NumberFormat('vi-VN').format(price)}đ</span>`;
     };
 
-    // 2. Hàm tải tài liệu
-    async function loadDocuments(keyword = "") {
-        console.log("Đang tải tài liệu... Từ khóa:", keyword); // Debug
-
+    // 2. Hàm tải tài liệu (Kết hợp Tìm kiếm & Lọc)
+    async function loadDocuments() {
         // Hiển thị loading
         if (libraryList) {
             libraryList.innerHTML = '<p style="text-align: center; grid-column: 1/-1;"><i class="fas fa-spinner fa-spin"></i> Đang xử lý...</p>';
         }
 
-        // Tạo Query Supabase
+        // Tạo Query cơ bản
         let query = window.supabaseClient
             .from('documents')
             .select('*')
             .order('created_at', { ascending: false });
 
-        // Nếu có từ khóa -> Lọc theo tên (title)
-        if (keyword.trim() !== "") {
-            query = query.ilike('title', `%${keyword}%`);
+        // A. Áp dụng Tìm kiếm (nếu có)
+        if (currentKeyword.trim() !== "") {
+            query = query.ilike('title', `%${currentKeyword}%`);
+        }
+
+        // B. Áp dụng Bộ lọc (Free/Paid)
+        if (currentFilter === 'free') {
+            query = query.eq('price', 0); // Giá bằng 0
+        } else if (currentFilter === 'paid') {
+            query = query.gt('price', 0); // Giá lớn hơn 0
         }
 
         // Gọi dữ liệu
@@ -51,8 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`;
             return;
         }
-
-        console.log(`Tìm thấy ${documents.length} tài liệu.`); // Debug
 
         // Render ra HTML
         libraryList.innerHTML = '';
@@ -92,11 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Sự kiện Tìm kiếm
     if (searchBtn) {
         searchBtn.addEventListener('click', () => {
-            const keyword = searchInput.value;
-            if (resultTitle) {
-                resultTitle.textContent = keyword ? `Kết quả tìm kiếm: "${keyword}"` : "Tất cả tài liệu";
-            }
-            loadDocuments(keyword);
+            currentKeyword = searchInput.value;
+            updateTitle();
+            loadDocuments();
         });
     }
 
@@ -104,6 +111,35 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') searchBtn.click();
         });
+    }
+
+    // 4. Sự kiện Lọc (Click vào nút)
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Xóa class active ở nút cũ
+            document.querySelector('.filter-btn.active').classList.remove('active');
+            // Thêm class active vào nút mới bấm
+            btn.classList.add('active');
+            
+            // Cập nhật biến lọc
+            currentFilter = btn.getAttribute('data-filter');
+            
+            updateTitle();
+            loadDocuments();
+        });
+    });
+
+    // Hàm cập nhật tiêu đề cho chuyên nghiệp
+    function updateTitle() {
+        let text = "Tất cả tài liệu";
+        if (currentFilter === 'free') text = "Tài liệu Miễn phí";
+        if (currentFilter === 'paid') text = "Tài liệu Có phí";
+        
+        if (currentKeyword) {
+            text += ` phù hợp với "${currentKeyword}"`;
+        }
+        
+        if (resultTitle) resultTitle.textContent = text;
     }
 
     // Chạy lần đầu
