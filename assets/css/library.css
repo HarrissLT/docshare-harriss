@@ -7,57 +7,115 @@
     text-align: center;
 }
 
+/* --- SEARCH BOX NÂNG CẤP (CÓ MÔN HỌC) --- */
 .search-box {
-    max-width: 600px;
+    max-width: 800px; /* Rộng hơn để chứa đủ các ô */
     margin: 0 auto;
+    background: white;
+    padding: 5px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* 1. Ô nhập từ khóa */
+.search-box input {
+    flex: 1.5; /* Chiếm phần lớn diện tích */
+    border: none;
+    padding: 15px 25px;
+    font-size: 1rem;
+    border-radius: 50px 0 0 50px;
+    outline: none;
+    color: var(--text-main);
+    background: transparent;
+    box-shadow: none; /* Tắt bóng cũ */
+}
+
+/* 2. Ô chọn môn học */
+.select-wrapper {
+    flex: 1;
     position: relative;
+    border-left: 1px solid #eee; /* Đường ngăn cách */
     display: flex;
     align-items: center;
 }
 
-/* Input tinh tế */
-.search-box input {
-    width: 100%;
-    padding: 18px 25px;
-    padding-right: 140px; /* Chừa chỗ cho nút bấm */
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 50px;
-    background: white;
-    font-size: 1rem;
-    color: var(--text-main);
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); /* Đổ bóng mềm */
-    transition: all 0.3s ease;
-}
-
-.search-box input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 15px 35px -10px rgba(79, 70, 229, 0.2);
-    transform: translateY(-2px);
-}
-
-/* Nút tìm kiếm nằm gọn bên trong */
-.search-box button {
+.select-wrapper i {
     position: absolute;
-    right: 6px;
-    top: 6px;
-    bottom: 6px;
+    left: 15px;
+    color: var(--text-light);
+    pointer-events: none; /* Để bấm xuyên qua icon */
+}
+
+.search-box select {
+    width: 100%;
+    border: none;
+    padding: 15px 15px 15px 40px; /* Padding trái chừa chỗ cho icon */
+    font-size: 0.95rem;
+    color: var(--text-main);
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+    appearance: none; /* Ẩn mũi tên mặc định xấu xí */
+    font-family: inherit;
+}
+
+/* 3. Nút tìm kiếm */
+.search-box button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 40px;
-    padding: 0 25px;
-    font-weight: 500;
     cursor: pointer;
     transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
     box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
 }
 
 .search-box button:hover {
     background: var(--primary-dark);
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
-.search-box button i {
-    margin-right: 5px;
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+    .search-box {
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .search-box input {
+        width: 100%;
+        border-radius: 10px;
+        border-bottom: 1px solid #eee;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .select-wrapper {
+        width: 100%;
+        border-left: none;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .search-box select {
+        text-align: center;
+        padding-left: 10px; /* Mobile không cần icon căn lề quá nhiều */
+    }
+    .select-wrapper i { display: none; } /* Ẩn icon môn học trên mobile cho gọn */
+
+    .search-box button {
+        width: 100%;
+        border-radius: 10px;
+        height: 40px;
+    }
 }
