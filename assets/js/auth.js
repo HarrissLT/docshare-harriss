@@ -169,3 +169,15 @@ if (loginForm) {
 }
 
 checkUserStatus();
+
+// 3. NẠP TÍNH NĂNG "NHẬP CODE ĐẶC QUYỀN" (nút cạnh "Kho tài liệu")
+(function loadSecretCode() {
+    if (!document.getElementById('navLinks')) return;
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'assets/css/secret-code.css';
+    document.head.appendChild(css);
+    const js = document.createElement('script');
+    js.src = 'assets/js/secret-code.js';
+    document.body.appendChild(js);
+})();
