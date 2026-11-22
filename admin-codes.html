@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý code đặc quyền - DocShare Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/secret-code.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Doc<span class="highlight">Share</span> Admin</a>
+            <div class="nav-auth" style="display:flex; gap:10px;">
+                <a href="admin.html" class="btn btn-outline">Đăng tài liệu</a>
+                <a href="index.html" class="btn btn-outline">Về trang chủ</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sc-admin">
+
+        <!-- FORM TẠO / SỬA CODE -->
+        <div class="sc-card">
+            <h2 id="formTitle"><i class="fas fa-key"></i> Tạo code mới</h2>
+
+            <div class="sc-field">
+                <label for="codeValue">Mã code (người dùng sẽ nhập mã này)</label>
+                <div class="sc-inline">
+                    <input type="text" id="codeValue" placeholder="Ví dụ: HARRISS2026" maxlength="64" autocomplete="off">
+                    <button type="button" class="sc-small" id="btnRandom"><i class="fas fa-dice"></i> Tạo ngẫu nhiên</button>
+                </div>
+            </div>
+
+            <div class="sc-field">
+                <label for="codeTitle">Tiêu đề ô thông tin</label>
+                <input type="text" id="codeTitle" placeholder="Ví dụ: Tài khoản VIP, Link nhóm kín...">
+            </div>
+
+            <div class="sc-field">
+                <label>Nội dung (mỗi đoạn văn bản sẽ có nút Copy)</label>
+                <div class="sc-toolbar">
+                    <button type="button" class="sc-small" id="btnAddText"><i class="fas fa-font"></i> Thêm văn bản</button>
+                    <button type="button" class="sc-small" id="btnAddImage"><i class="fas fa-image"></i> Thêm ảnh</button>
+                    <button type="button" class="sc-small" id="btnAddFile"><i class="fas fa-paperclip"></i> Thêm tệp đính kèm</button>
+                    <input type="file" id="pickImage" accept="image/*" hidden>
+                    <input type="file" id="pickFile" hidden>
+                </div>
+                <div id="blocksEditor"></div>
+            </div>
+
+            <div class="sc-field">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" id="codeActive" checked> Đang hoạt động (bỏ chọn để tạm tắt mã)
+                </label>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <button type="button" class="btn btn-primary" id="btnSave">Lưu code</button>
+                <button type="button" class="btn btn-outline" id="btnCancel" style="display:none;">Hủy sửa</button>
+            </div>
+            <div id="formMsg" class="message" style="margin-top:12px;"></div>
+        </div>
+
+        <!-- DANH SÁCH CODE -->
+        <div class="sc-card">
+            <h2><i class="fas fa-list"></i> Danh sách code</h2>
+            <div id="codeList"><p><i class="fas fa-spinner fa-spin"></i> Đang tải...</p></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/admin-codes.js"></script>
+</body>
+</html>
